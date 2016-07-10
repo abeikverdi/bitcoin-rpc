@@ -1,23 +1,19 @@
 var express = require('express');
-var bitcoin = require('bitcoin');
+var path = require('path');
+var bodyParser = require('body-parser');
+var routes = require('./routes/index');
+
 var app = express();
 
-var client = new bitcoin.Client({
-  host: '104.236.132.237',
-  port: 8332,
-  user: 'abeikverdi',
-  pass: 'ali123',
-  timeout: 5000
-});
+// view engine setup
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'ejs');
 
-client.getInfo('*', 6, function(err, balance, resHeaders) {
-		if (err) return console.log(err);
-		console.log('Balance:', balance);
-	});
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(express.static(path.join(__dirname, 'public')));
 
-app.get('/', function (req, res) {
-	res.send('Hello World!');
-});
+app.use('/', routes);
 
 app.listen(3000, function () {
   console.log('Example app listening on port 3000!');
